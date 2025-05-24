@@ -61,14 +61,14 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
 
-    feePaymentStatus: {
-        feeTimeline:[ {
+    feePaymentStatus: 
+       [ {
             paymentDate: { type: Date },
             paymentStatus: { type: Boolean, default: false },
             paymentAmount: { type: Number }
         }]
     }
-});
+);
 
 
 

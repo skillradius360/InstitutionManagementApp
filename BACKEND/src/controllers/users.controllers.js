@@ -221,13 +221,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 const updateUserImages = asyncHandler(async (req, res) => {
-    const avatar = req.files?.avatar[0]?.path
+    const avatar = req.file?.path
     if (!avatar) {
         throw new apiError(400, "No avatar files recieved to be uploaded")
-    }
-    const coverImage = req.files?.backgroundImage[0]?.path
-    if (!coverImage) {
-        throw new apiError(400, "no cover image found")
     }
 
     const avatarCloudUploadURL = await cloudUploader(avatar)
@@ -242,8 +238,8 @@ const updateUserImages = asyncHandler(async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(req.user._id,
         {
             $set: {
-                avatar: avatarCloudUploadURL.url,
-                coverImage: coverCloudUploadURL.url || ""
+                userAvatar: avatarCloudUploadURL?.url,
+                
             }
         }, {
         new: true
@@ -308,7 +304,27 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     req.status(200).json(new apiResponse(200, userExists, "user updated successfully!"))
 })
+
+
+const makePayment = asyncHandler(async(req,res)=>{
+    const userId = req.user._id
+    const data= req.body
+    console.log(data)
+    if(!userId) throw new apiError(401,"user not logged In!")
+    
+    const userCurrent = await User.findByIdAndUpdate(userId,{
+        $push:{
+            feePaymentStatus:
+                data
+            
+        },
+        
+        new:true
+        
+    })
+    return res.status(200).json(new apiResponse(200,userCurrent,"updated 🤑🤑"))
+})
 export {
     signUp, login, logOut, refreshCookie, deleteUser,
-    updateUserImages, deleteUserById, updateUserProfile
+    updateUserImages, deleteUserById, updateUserProfile,makePayment
 }

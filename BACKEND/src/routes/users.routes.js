@@ -2,7 +2,7 @@ import Router from "express"
 import { signUp,
     login,
     logOut,
-    updateUserImages} from "../controllers/users.controllers.js"
+    updateUserImages,makePayment} from "../controllers/users.controllers.js"
 import {upload} from "../middlewares/multer.middleware.js"
 import { checkJWT } from "../middlewares/auth.middleware.js"
 const userRouter = Router()
@@ -15,4 +15,5 @@ userRouter.route("/logOut").get(checkJWT,logOut)
 userRouter.route("/updateImg").get(checkJWT,upload.fields([
     {name:"avatar", maxCount:1},{name:"backgroundImage", maxCount:1}
 ]),updateUserImages)
+userRouter.route("/editPaymentData").post(checkJWT,makePayment)
 export {userRouter}  
